@@ -1,12 +1,7 @@
 package com.jardoapps.timesheet.filler;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-
-import org.pf4j.DefaultPluginManager;
-import org.pf4j.PluginManager;
 
 import com.jardoapps.timesheet.plugin.api.TimesheetFillerExtension;
 import com.jardoapps.timesheet.plugin.api.TimesheetFillerExtension.RecordLoader;
@@ -15,8 +10,9 @@ import com.jardoapps.timesheet.plugin.api.TimesheetFillerExtension.RecordTransfo
 import com.jardoapps.timesheet.plugin.api.TimesheetRecord;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class TimesheetFillerApplication extends Application {
@@ -28,18 +24,10 @@ public class TimesheetFillerApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		Path pluginPath = Paths.get(System.getProperty("user.home"), ".timesheet-filler", "plugins");
-		PluginManager pluginManager = new DefaultPluginManager(pluginPath);
-		pluginManager.loadPlugins();
-		pluginManager.startPlugins();
-
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
 		primaryStage.setTitle("Timesheet Filler");
-		Scene scene = new Scene(new BorderPane(), 800, 600);
-		primaryStage.setScene(scene);
+		primaryStage.setScene(new Scene(root, 800, 600));
 		primaryStage.show();
-
-		List<TimesheetFillerExtension> plugins = pluginManager.getExtensions(TimesheetFillerExtension.class);
-		doProcessing(plugins);
 	}
 
 	private void doProcessing(List<TimesheetFillerExtension> plugins) throws Exception {
