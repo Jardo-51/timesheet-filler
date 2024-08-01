@@ -13,6 +13,8 @@ import org.pf4j.PluginManager;
 
 import com.jardoapps.timesheet.plugin.api.TimesheetFillerExtension;
 import com.jardoapps.timesheet.plugin.api.TimesheetFillerExtension.RecordLoader;
+import com.jardoapps.timesheet.plugin.api.TimesheetFillerExtension.RecordSaver;
+import com.jardoapps.timesheet.plugin.api.TimesheetFillerExtension.RecordTransformer;
 import com.jardoapps.timesheet.plugin.api.TimesheetRecord;
 
 import javafx.application.Application;
@@ -66,7 +68,23 @@ public class TimesheetFillerApplication extends Application {
 				.get()
 				.getLoader();
 
-		List<TimesheetRecord> records = loader.loadRecords(Map.of("filePath", "/tmp/stt_records.csv"));
-		records.forEach(System.out::println);
+		List<TimesheetRecord> records = loader.loadRecords(Map.of("filePath", "/home/user/Downloads/stt_records_20240731_024623.csv"));
+
+		RecordTransformer transformer = plugins.stream()
+				.filter(plugin -> plugin.getName().equals("MyCompany"))
+				.findFirst()
+				.get()
+				.getTransformer();
+
+		records = transformer.transformRecords(records, Map.of());
+
+		RecordSaver saver = plugins.stream()
+				.filter(plugin -> plugin.getName().equals("MyCompany"))
+				.findFirst()
+				.get()
+				.getSaver();
+
+		Map<String, String> params = Map.of("cookie", "dummy");
+		saver.saveRecords(records, params);
 	}
 }
