@@ -1,8 +1,5 @@
 package com.jardoapps.timesheet.filler;
 
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -32,31 +29,16 @@ public class TimesheetFillerApplication extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		Path pluginPath = Paths.get("/tmp/plugins");
-
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(pluginPath)) {
-			for (Path entry : stream) {
-				System.out.println(entry.getFileName());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		PluginManager pluginManager = new DefaultPluginManager(pluginPath);
 		pluginManager.loadPlugins();
 		pluginManager.startPlugins();
-
-		List<TimesheetFillerExtension> plugins = pluginManager.getExtensions(TimesheetFillerExtension.class);
-		System.out.println("Plugins: " + plugins.size());
-
-		plugins.forEach(plugin -> {
-			System.out.println(plugin.getName());
-		});
 
 		primaryStage.setTitle("Timesheet Filler");
 		Scene scene = new Scene(new BorderPane(), 800, 600);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
+		List<TimesheetFillerExtension> plugins = pluginManager.getExtensions(TimesheetFillerExtension.class);
 		doProcessing(plugins);
 	}
 
@@ -68,10 +50,10 @@ public class TimesheetFillerApplication extends Application {
 				.get()
 				.getLoader();
 
-		List<TimesheetRecord> records = loader.loadRecords(Map.of("filePath", "/home/user/Downloads/stt_records_20240731_024623.csv"));
+		List<TimesheetRecord> records = loader.loadRecords(Map.of("filePath", "/tmp/stt_records.csv"));
 
 		RecordTransformer transformer = plugins.stream()
-				.filter(plugin -> plugin.getName().equals("MyCompany"))
+				.filter(plugin -> plugin.getName().equals("Adastra"))
 				.findFirst()
 				.get()
 				.getTransformer();
@@ -79,7 +61,7 @@ public class TimesheetFillerApplication extends Application {
 		records = transformer.transformRecords(records, Map.of());
 
 		RecordSaver saver = plugins.stream()
-				.filter(plugin -> plugin.getName().equals("MyCompany"))
+				.filter(plugin -> plugin.getName().equals("Adastra"))
 				.findFirst()
 				.get()
 				.getSaver();
