@@ -28,7 +28,7 @@ public class TimesheetFillerApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		Path pluginPath = Paths.get("/tmp/plugins");
+		Path pluginPath = Paths.get(System.getProperty("user.home"), ".timesheet-filler", "plugins");
 		PluginManager pluginManager = new DefaultPluginManager(pluginPath);
 		pluginManager.loadPlugins();
 		pluginManager.startPlugins();
