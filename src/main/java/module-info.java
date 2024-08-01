@@ -10,6 +10,7 @@ module TimesheetFiller {
 	requires javafx.fxml;
 
 	opens com.jardoapps.timesheet.filler to javafx.graphics;
+	opens com.jardoapps.timesheet.filler.controller to javafx.fxml;
 
 	exports com.jardoapps.timesheet.filler;
 	exports com.jardoapps.timesheet.filler.controller;
