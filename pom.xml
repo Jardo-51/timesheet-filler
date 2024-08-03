@@ -131,7 +131,7 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/Jardo-51/timesheet-filler-plugins</url>
+			<url>https://maven.pkg.github.com/Jardo-51/timesheet-filler-plugin-api</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
