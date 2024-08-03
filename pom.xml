@@ -1,75 +1,130 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.jardoapps</groupId>
-	<artifactId>timesheet-filler</artifactId>
+	<groupId>com.jardoapps.timesheet</groupId>
+	<artifactId>timesheet-filler-parent</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
 	<properties>
 		<java.version>17</java.version>
-		<javafx.version>22.0.2</javafx.version>
+		<lombok.version>1.18.34</lombok.version>
+		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<dependencies>
+	<scm>
+		<developerConnection>scm:git:file://${project.basedir}</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
-		<dependency>
-			<groupId>com.jardoapps.timesheet</groupId>
-			<artifactId>timesheet-filler-plugin-api</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-		</dependency>
+	<modules>
+		<module>timesheet-filler-standard-plugins/timesheet-filler-stt-plugin</module>
+		<module>timesheet-filler-app</module>
+	</modules>
 
-		<dependency>
-			<groupId>com.jardoapps.timesheet</groupId>
-			<artifactId>simple-time-tracker-plugin</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-		</dependency>
+	<dependencyManagement>
 
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
+		<dependencies>
 
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-fxml</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>com.jardoapps.timesheet</groupId>
+				<artifactId>timesheet-filler-plugin-api</artifactId>
+				<version>0.1.0-SNAPSHOT</version>
+			</dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.5.6</version>
-		</dependency>
+			<dependency>
+				<groupId>org.pf4j</groupId>
+				<artifactId>pf4j</artifactId>
+				<version>3.12.0</version>
+			</dependency>
 
-	</dependencies>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.5.6</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>5.10.3</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>5.10.3</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>3.26.3</version>
+				<scope>test</scope>
+			</dependency>
+
+		</dependencies>
+
+	</dependencyManagement>
 
 	<build>
-		<plugins>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
+		<pluginManagement>
 
-			<plugin>
-				<groupId>org.openjfx</groupId>
-				<artifactId>javafx-maven-plugin</artifactId>
-				<version>0.0.8</version>
-				<configuration>
-					<mainClass>com.jardoapps.timesheet.filler.TimesheetFillerApplication</mainClass>
-				</configuration>
-			</plugin>
+			<plugins>
 
-		</plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.13.0</version>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>3.3.1</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>integration-test</goal>
+								<goal>verify</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>3.1.1</version>
+					<configuration>
+						<autoResolveSnapshots>all</autoResolveSnapshots>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<tagNameFormat>${maven.build.timestamp}_v@{project.version}</tagNameFormat>
+					</configuration>
+				</plugin>
+
+			</plugins>
+
+		</pluginManagement>
+
 	</build>
 
 	<repositories>
